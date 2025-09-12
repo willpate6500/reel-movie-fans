@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import ContactForm from './components/ContactForm';
-
+import Image from 'next/image';
 
 export default function Page() {
   return (
@@ -36,12 +36,12 @@ export default function Page() {
         ))}
       </section>
 
-      <img
-        src={`/photos/dog.png?version=3&campaign=fall&t=${Date.now()}`}
-        alt="Dog"
+      <Image
+        src="/photos/dog.png?version=3&campaign=fall"
+        alt="My Dog Pic"
         width={300}
         height={200}
-        loading="eager"
+        priority
       />
 
 

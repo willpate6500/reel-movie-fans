@@ -1,52 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { sql } from '@vercel/postgres'
-import { z } from 'zod'
+// src/app/api/subscribe/route.ts
+import { NextResponse } from 'next/server';
 
-const Schema = z.object({
-  name: z.string().min(1).max(100),
-  email: z.string().email(),
-  favoriteGenre: z.string().optional().or(z.literal('')),
-  consent: z.literal(true),
-})
+type SubscribePayload = { email: string };
 
-export async function POST(req: NextRequest) {
-  try {
-    const json = await req.json()
-    const parsed = Schema.safeParse(json)
-    if (!parsed.success) {
-      return NextResponse.json({ error: 'Invalid form', issues: parsed.error.issues }, { status: 400 })
-    }
-    const { name, email, favoriteGenre } = parsed.data
-
-    await sql/*sql*/`
-      CREATE TABLE IF NOT EXISTS subscribers (
-        id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        favorite_genre TEXT,
-        created_at TIMESTAMPTZ DEFAULT NOW()
-      );
-    `
-    await sql/*sql*/`
-      INSERT INTO subscribers (name, email, favorite_genre)
-      VALUES (${name}, ${email}, ${favoriteGenre || null})
-      ON CONFLICT (email) DO UPDATE
-      SET name = EXCLUDED.name,
-          favorite_genre = EXCLUDED.favorite_genre;
-    `
-    return NextResponse.json({ ok: true })
-  } catch (e: any) {
-    console.error('Subscribe POST error', e)
-    return NextResponse.json({ error: 'Server error' }, { status: 500 })
-  }
+function isSubscribePayload(x: unknown): x is SubscribePayload {
+  return !!x && typeof x === 'object' && 'email' in (x as Record<string, unknown>);
 }
 
-export async function GET() {
-  const { rows } = await sql/*sql*/`
-    SELECT id, name, email, favorite_genre, created_at
-    FROM subscribers
-    ORDER BY created_at DESC
-    LIMIT 500;
-  `
-  return NextResponse.json({ subscribers: rows })
+export async function POST(req: Request) {
+  const url = new URL(req.url);
+  const raw: unknown = await req.json().catch(() => null);
+
+  if (!isSubscribePayload(raw) || !raw.email) {
+    return NextResponse.json({ ok: false, error: 'email required' }, { status: 400 });
+  }
+
+  // TODO: add your subscription logic here (store raw.email or call provider)
+
+  return NextResponse.json({ ok: true, email: raw.email });
+}
+
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  // Example read-only endpoint (typed, no any)
+  return NextResponse.json({ ok: true, query: Object.fromEntries(url.searchParams) });
 }

@@ -1,4 +1,6 @@
+// src/lib/logger.ts
 import { prisma } from './prisma';
+import type { Prisma } from '@prisma/client';
 
 type LogInput = {
   method: string;
@@ -9,7 +11,6 @@ type LogInput = {
 };
 
 export async function logRequest(input: LogInput) {
-  // keep body small
   let bodyStr: string | undefined;
   try {
     if (input.body !== undefined) {
@@ -24,8 +25,9 @@ export async function logRequest(input: LogInput) {
     data: {
       method: input.method,
       path: input.path,
-      query: input.query as any,
-      headers: input.headers,
+      // 👇 key change: use Prisma.InputJsonValue
+      query: input.query as Prisma.InputJsonValue,
+      headers: input.headers as Prisma.InputJsonValue,
       body: bodyStr,
     },
   });
