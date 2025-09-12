@@ -36,7 +36,14 @@ export default function Page() {
         ))}
       </section>
 
-      <img src="/photos/dog.png?version=3&campaign=fall" alt="My Dog Pic" />
+      <img
+        src={`/photos/dog.png?version=3&campaign=fall&t=${Date.now()}`}
+        alt="Dog"
+        width={300}
+        height={200}
+        loading="eager"
+      />
+
 
       <section className="rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8">
         <h2 className="text-2xl font-semibold">Why another movie site?</h2>

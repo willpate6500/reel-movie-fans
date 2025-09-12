@@ -15,3 +15,14 @@ model Submission {
   message   String
   createdAt DateTime @default(now())
 }
+
+
+model RequestLog {
+  id        String   @id @default(cuid())
+  method    String
+  path      String
+  query     Json
+  headers   Json
+  body      String?
+  createdAt DateTime @default(now())
+}
