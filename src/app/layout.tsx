@@ -2,7 +2,7 @@ import './globals.css';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'RealMovieFans — Movies, Together',
+  title: 'ReelMovieFans — Movies, Together',
   description: 'A tiny community for people who love films.',
 };
 
@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <nav className="mx-auto max-w-6xl px-4 lg:px-6 h-16 flex items-center justify-between">
             <Link href="/" className="text-lg font-semibold tracking-tight">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-300">
-                RealMovieFans
+                ReelMovieFans
               </span>
             </Link>
             <div className="flex items-center gap-2">
@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
 
         <footer className="mx-auto max-w-6xl px-4 lg:px-6 py-10 text-xs text-zinc-400 border-t border-white/10">
-          © {new Date().getFullYear()} RealMovieFans
+          © {new Date().getFullYear()} ReelMovieFans
         </footer>
       </body>
     </html>
