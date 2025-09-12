@@ -1,6 +1,6 @@
 import LoggedImage from '@/components/LoggedImage';
 
-export const metadata = { title: 'Dog — RealMovieFans' };
+export const metadata = { title: 'Dog — ReelMovieFans' };
 
 export default function DogPage() {
   return (
