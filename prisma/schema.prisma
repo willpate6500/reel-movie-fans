@@ -16,6 +16,13 @@ model Submission {
   createdAt DateTime @default(now())
 }
 
+model Subscription {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+
 
 model RequestLog {
   id        String   @id @default(cuid())

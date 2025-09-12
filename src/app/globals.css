@@ -1,6 +1,46 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind v4 boot */
+@import "tailwindcss";
 
+/* App theme (Tailwind v4-style) */
+@theme {
+  --color-bg: #0b0b0e;
+  --color-bg-card: #111116;
+  --color-bg-soft: #15151c;
+}
+
+/* Base surface */
 :root { color-scheme: dark; }
-html, body { height: 100%; background: radial-gradient(1200px 600px at 10% -10%, #0f172a 0%, #0b0d12 50%, #0b0d12 100%); }
+html, body { height: 100%; }
+body {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(64,64,255,.18) 0%, rgba(0,0,0,0) 60%),
+    radial-gradient(900px 540px at 110% 10%, rgba(0,200,255,.14) 0%, rgba(0,0,0,0) 60%),
+    var(--color-bg);
+  color: rgb(244 244 245); /* zinc-100 */
+}
+
+/* Reusable UI bits (v4 still supports @apply) */
+.card {
+  @apply rounded-2xl border border-white/10 bg-[color:var(--color-bg-card)]/95 backdrop-blur-sm shadow-[0_10px_30px_rgba(0,0,0,.30)] ring-1 ring-inset ring-white/5;
+}
+
+/* Buttons */
+.btn,
+.btn-primary,
+.btn-ghost {
+  @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-medium transition;
+}
+
+.btn-primary {
+  @apply bg-white text-black hover:opacity-90;
+}
+
+.btn-ghost {
+  @apply border border-white/10 hover:bg-white/5;
+}
+
+
+
+.input {
+  @apply w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-white/30;
+}
