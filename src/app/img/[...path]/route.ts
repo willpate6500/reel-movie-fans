@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -13,23 +13,38 @@ const MIME: Record<string, string> = {
 };
 
 export async function GET(
-  req: Request,
-  ctx: { params: Promise<{ path: string[] }> }
+  req: NextRequest,
+  context: { params: Promise<{ path: string[] }> }
 ) {
-  const { path: segments } = await ctx.params;
-  const relPath = segments.join('/');
-  const filePath = path.join(process.cwd(), 'public', 'photos', relPath);
-
   try {
-    const buf = await readFile(filePath);
+    const { path: segs } = await context.params;
+    const relPath = segs?.join('/') ?? '';
+
+    // Serve only from /public; prevent path traversal
+    const publicDir = path.join(process.cwd(), 'public');
+    const filePath = path.join(publicDir, relPath);
+    const rel = path.relative(publicDir, filePath);
+    if (rel.startsWith('..') || path.isAbsolute(rel)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const ext = path.extname(filePath).toLowerCase();
-    const type = MIME[ext] || 'application/octet-stream';
+    const type = MIME[ext] ?? 'application/octet-stream';
 
-    // Log query params for visibility
+    const buf = await readFile(filePath);
+
+    // Log request (optional)
     const url = new URL(req.url);
-    console.log('IMG PROXY', { path: relPath, qs: Object.fromEntries(url.searchParams.entries()) });
+    // eslint-disable-next-line no-console
+    console.log('IMG PROXY', {
+      path: relPath,
+      qs: Object.fromEntries(url.searchParams.entries()),
+    });
 
-    return new NextResponse(buf, {
+    // Convert Node Buffer -> ArrayBuffer that satisfies BodyInit
+    const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
+
+    return new NextResponse(ab, {
       status: 200,
       headers: {
         'Content-Type': type,

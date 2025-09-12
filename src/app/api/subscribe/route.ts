@@ -12,15 +12,16 @@ export async function POST(req: Request) {
   if (!isPayload(body)) {
     return NextResponse.json({ ok: false, error: 'email required' }, { status: 400 });
   }
+
   const email = String(body.email).trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ ok: false, error: 'invalid email' }, { status: 400 });
-    }
+  }
 
   try {
     await prisma.subscription.create({ data: { email } });
-  } catch (e) {
-    // ignore duplicate signups
+  } catch {
+    // ignore duplicate signups (unique constraint)
   }
 
   return NextResponse.json({ ok: true, email });
