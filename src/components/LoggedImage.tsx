@@ -1,12 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export type LoggedImageProps = {
-  /** Path relative to /public, served via /img/[...path] route (e.g., "dog.png" or "gallery/dog.png") */
+  /** Path under public/photos, e.g. "dog.png" or "gallery/dog.png" */
   path: string;
-  /** Optional query parameters appended to the /img URL (e.g., { version: '3', campaign: 'fall' }) */
+  /** Optional query params appended to /img URL */
   params?: Record<string, string>;
   width: number;
   height: number;
@@ -22,55 +22,69 @@ export default function LoggedImage({
   alt,
   className,
 }: LoggedImageProps) {
-  const [copied, setCopied] = useState(false);
-  const urlRef = useRef<HTMLSpanElement | null>(null);
-
-  // Build the proxied URL that hits your /img/[...path] handler
+  // Relative URL served by our /img route
   const qs = new URLSearchParams(params).toString();
-  const src = `/img/${path}${qs ? `?${qs}` : ''}`;
+  const relativeUrl = `/img/${path}${qs ? `?${qs}` : ''}`;
 
-  function log(action: string) {
-    // eslint-disable-next-line no-console
-    console.log('LoggedImage', { action, path, params });
-  }
+  // Absolute URL for copy/open actions
+  const absoluteUrl = useMemo(() => {
+    // Client-only; component is 'use client'
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    try {
+      return new URL(relativeUrl, origin).toString();
+    } catch {
+      return relativeUrl;
+    }
+  }, [relativeUrl]);
+
+  const [copied, setCopied] = useState(false);
 
   async function copyUrl() {
     try {
-      await navigator.clipboard.writeText(src);
+      await navigator.clipboard.writeText(absoluteUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 1200);
-      log('copy');
+      // eslint-disable-next-line no-console
+      console.log('LoggedImage', { action: 'copy', url: absoluteUrl });
     } catch {
       // ignore
     }
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="relative" onClick={() => log('click')}>
-        <Image
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          className={className}
-          // You can tweak priority or sizes as needed:
-          // priority
-          // sizes="(max-width: 768px) 100vw, 1200px"
-        />
-      </div>
+    <div className="flex flex-col gap-3">
+      {/* Show the image; unoptimized = use our direct URL, no Next optimizer */}
+      <Image
+        src={relativeUrl}
+        alt={alt}
+        width={width}
+        height={height}
+        className={className}
+        unoptimized
+        onClick={() => console.log('LoggedImage', { action: 'click', url: absoluteUrl })}
+      />
 
-      <div className="flex items-center gap-2">
-        <span ref={urlRef} className="text-sm break-all">
-          {src}
-        </span>
+      <div className="flex flex-wrap items-center gap-2 text-sm">
+        <a
+          href={absoluteUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-md border border-white/10 px-2 py-1 hover:bg-white/5"
+          onClick={() => console.log('LoggedImage', { action: 'open', url: absoluteUrl })}
+        >
+          Open image in new tab
+        </a>
+
         <button
           type="button"
           onClick={copyUrl}
-          className="rounded-md border px-2 py-1 text-sm"
+          className="rounded-md border border-white/10 px-2 py-1 hover:bg-white/5"
         >
           {copied ? 'Copied!' : 'Copy image URL'}
         </button>
+
+        {/* Show the full absolute URL (wrappable), so it’s obvious what we’re copying */}
+        <span className="break-all text-zinc-400">{absoluteUrl}</span>
       </div>
     </div>
   );
