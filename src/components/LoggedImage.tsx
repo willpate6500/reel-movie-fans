@@ -1,3 +1,4 @@
+// src/components/LoggedImage.tsx
 'use client';
 
 import Image from 'next/image';
@@ -28,7 +29,6 @@ export default function LoggedImage({
 
   // Absolute URL for copy/open actions
   const absoluteUrl = useMemo(() => {
-    // Client-only; component is 'use client'
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
     try {
       return new URL(relativeUrl, origin).toString();
@@ -44,7 +44,7 @@ export default function LoggedImage({
       await navigator.clipboard.writeText(absoluteUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 1200);
-      // eslint-disable-next-line no-console
+      // keep this log; no eslint-disable needed if rule allows console (default)
       console.log('LoggedImage', { action: 'copy', url: absoluteUrl });
     } catch {
       // ignore
@@ -83,7 +83,6 @@ export default function LoggedImage({
           {copied ? 'Copied!' : 'Copy image URL'}
         </button>
 
-        {/* Show the full absolute URL (wrappable), so it’s obvious what we’re copying */}
         <span className="break-all text-zinc-400">{absoluteUrl}</span>
       </div>
     </div>

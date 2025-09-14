@@ -1,12 +1,22 @@
+// src/app/layout.tsx
 import './globals.css';
 import Link from 'next/link';
+import type { ReactNode } from 'react';
+import { getLoggedInUsername } from '@/lib/auth';
+import HeaderRight from '@/components/HeaderRight';
 
 export const metadata = {
   title: 'ReelMovieFans — Movies, Together',
   description: 'A tiny community for people who love films.',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+// Optional: ensure the header re-renders freshly on each request
+export const dynamic = 'force-dynamic';
+
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  // First-paint username from the server (cookie)
+  const initialUsername = await getLoggedInUsername();
+
   return (
     <html lang="en">
       <body className="min-h-screen">
@@ -17,9 +27,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 ReelMovieFans
               </span>
             </Link>
+
             <div className="flex items-center gap-2">
-              <Link href="/subscribe" className="btn-ghost">Subscribe</Link>
+              <Link href="/discussions" className="btn-ghost">Discussions</Link>
               <Link href="/dog" className="btn-ghost">Dog</Link>
+              {/* Client side hydrates and reacts to login/logout without manual refresh */}
+              <HeaderRight initialUsername={initialUsername} />
             </div>
           </nav>
         </header>

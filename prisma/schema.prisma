@@ -22,8 +22,6 @@ model Subscription {
   createdAt DateTime @default(now())
 }
 
-
-
 model RequestLog {
   id        String   @id @default(cuid())
   method    String
@@ -31,5 +29,14 @@ model RequestLog {
   query     Json
   headers   Json
   body      String?
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String?
+  password  String   // plaintext per your request (NOT secure)
+  details   Json?    // arbitrary extra fields you send at signup
   createdAt DateTime @default(now())
 }
