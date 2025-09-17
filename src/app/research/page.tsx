@@ -55,7 +55,7 @@ export default function ResearchPage() {
               1930s and 1940s, the classical Hollywood studio system reached full strength, producing
               genre staples like screwball comedies, film noir, and Technicolor epics. Vertical
               integration let companies control production, distribution, and exhibition until the U.S.
-              Supreme Court's 1948 Paramount decision began dismantling that model.
+              Supreme Court&apos;s 1948 Paramount decision began dismantling that model.
             </p>
             <p>
               Beyond Hollywood, global cinemas offered vibrant alternatives. Italian Neorealism emerged
@@ -64,7 +64,7 @@ export default function ResearchPage() {
               1950s and 1960s ushered in the French New Wave, whose critics-turned-filmmakers—François
               Truffaut, Jean-Luc Godard, Agnès Varda—rejected polished conventions in favor of
               jump-cuts, handheld cameras, and self-reflexive narratives. Parallel movements blossomed
-              in Brazil's Cinema Novo, India's Parallel Cinema, and Eastern Europe's New Wave, each
+              in Brazil&apos;s Cinema Novo, India&apos;s Parallel Cinema, and Eastern Europe&apos;s New Wave, each
               merging local concerns with experimental form.
             </p>
           </section>
