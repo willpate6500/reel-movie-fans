@@ -30,6 +30,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
             <div className="flex items-center gap-2">
               <Link href="/discussions" className="btn-ghost">Discussions</Link>
+              <Link href="/research" className="btn-ghost">Research</Link>
               <Link href="/dog" className="btn-ghost">Dog</Link>
               {/* Client side hydrates and reacts to login/logout without manual refresh */}
               <HeaderRight initialUsername={initialUsername} />
